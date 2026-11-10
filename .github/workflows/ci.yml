@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  # ── WHY THIS LIST IS NOT JUST `main` (audit B-5) ────────────────────────────────────────────────
+  # Development happens on `remediation/phases`. With the trigger set to main/master only, every
+  # commit there went out with no typecheck, no boundary check, no migration run, no RLS proof
+  # and no tests — the whole suite existed and none of it ran on the code that shipped.
+  #
+  # `remediation/**` rather than the one branch name, so the next long-lived remediation branch is
+  # covered the day it is cut instead of the day somebody notices.
+  push:
+    branches: [main, master, 'remediation/**']
+  pull_request:
+
+jobs:
+  build:
+    name: lint · typecheck · migrate · test
+    runs-on: ubuntu-latest
+
+    # A throwaway Postgres so migrations (and later DB tests) run in CI even though
+    # dev uses a managed remote instance.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mermaid
+          POSTGRES_PASSWORD: mermaid
+          POSTGRES_DB: mermaid_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mermaid"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # The container's POSTGRES_USER is a SUPERUSER, and a superuser ignores row-level security
+      # entirely — so it can run migrations (DDL) but must never be what the app or the RLS proof
+      # connects as. The provisioning step below creates the unprivileged role for that.
+      DATABASE_ADMIN_URL: postgres://mermaid:mermaid@localhost:5432/mermaid_test
+      DATABASE_URL: postgres://mermaid_app:ci-app-password@localhost:5432/mermaid_test
+      APP_DB_PASSWORD: ci-app-password
+      # Run the live-database suite in the PRODUCTION configuration: PHI encrypted at rest. A
+      # throwaway key for a throwaway database — the point is that every repository still round-trips
+      # through the cipher, not that this value is a secret.
+      PHI_ENCRYPTION_KEY: Y2ktb25seS10ZXN0LWtleS0zMi1ieXRlcy1sb25nISE=
+      # ── THE ONLY PLACE TLS IS RELAXED, AND IT TAKES TWO KEYS (NEW-03) ─────────────────────────
+      # Every connection this repository opens — the pool AND the six operational scripts — pins
+      # verified TLS. The `postgres:16` service container above speaks none, so the pin has to be
+      # relaxed here or nothing connects.
+      #
+      # `resolveTls` (platform/db/tls.mjs) honours this ONLY when the host is a loopback literal, so
+      # this variable leaking into a deployment that points at a real database changes nothing
+      # there: it still gets verified TLS. That is why the relaxation is safe to write down.
+      PGSSLMODE: disable
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Module boundaries (events-only rule)
+        run: npm run boundaries
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Provision the unprivileged application role (grants)
+        # Must run BEFORE migrations: ALTER DEFAULT PRIVILEGES only applies to objects created after
+        # it, so granting first is what saves a follow-up grant for every future migration.
+        run: npm run db:provision-role
+
+      - name: Apply migrations
+        run: npm run migrate
+
+      - name: Migration status
+        run: npm run migrate:status
+
+      - name: Provision the unprivileged application role (append-only audit revoke)
+        # ── WHY THIS RUNS A SECOND TIME ─────────────────────────────────────────────────────────
+        # Provisioning a fresh database is inherently two passes, and this is the second.
+        #
+        # The pass above must precede the migrations, for the reason stated there. But the script
+        # also REVOKES the app role's INSERT/UPDATE/DELETE on `audit_events` — the HIPAA §164.312(b)
+        # control that keeps the audit trail append-only — and that table is created BY a migration.
+        # Before them it does not exist, so the first pass cannot apply the revoke and says so.
+        #
+        # Without this step CI was red on every run since the revoke landed: `relation
+        # "audit_events" does not exist`, before a single test executed. It never failed on a laptop
+        # or on staging, because there the table already existed.
+        #
+        # The script is idempotent by construction — the blanket grant re-runs and the revoke is
+        # ordered after it — so running it twice is the intended shape, not a workaround.
+        # `DEPLOYING.md` tells operators the same thing: re-run it after every migration.
+        run: npm run db:provision-role
+
+      - name: Verify RLS + auth (live smoke test)
+        # Runs as mermaid_app. Fails loudly if that role can bypass RLS — a tenant-isolation proof
+        # run as a superuser is not a weaker proof, it is not a proof at all.
+        run: npm run db:verify
+
+      - name: Tests (unit + business)
+        # This suite is the DB-FREE one by design — `npm test` deliberately omits the
+        # `--env-file-if-exists=.env` that the database scripts carry, so locally it never sees a
+        # DATABASE_URL. The job-level variable would otherwise leak a live database into it, which is
+        # not the configuration these tests are written for: `monitors.test.ts` drives the money
+        # monitor's "the practice enumeration failed" branch, which cannot be reached when the
+        # enumeration succeeds. The live-database suite is the next step and still inherits the job env.
+        run: npm test
+        env:
+          DATABASE_URL: ''
+
+      - name: Tests (live database)
+        run: npm run test:db

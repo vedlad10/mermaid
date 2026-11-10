@@ -1,0 +1,52 @@
+# dependencies
+node_modules/
+.pnp/
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+.next/
+out/
+
+# env & secrets — never commit
+.env
+.env.*
+!.env.example
+
+# data & logs
+data/
+*.log
+*.db
+*.db-shm
+*.db-wal
+
+# os / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Local run artifacts: server logs, pid files, and anything an end-to-end check leaves behind.
+# `.e2e-cookies.txt` holds a live session cookie — a credential, and never a thing to commit.
+#
+# Matched by PREFIX, not by suffix. The rules here were `.mermaid-*.log` and `.mermaid-*.pid`,
+# which covered `.mermaid-3002.log` and `.mermaid-3002.err.log` but silently missed
+# `.mermaid-3002.log.err` — so a server error log sat untracked-and-unignored, one `git add -A`
+# from being committed. Error logs are exactly the file that captures a connection string or a
+# patient name in a stack trace, so the pattern matches the whole family rather than the two
+# suffixes someone thought of first.
+.mermaid-*
+.e2e-*
+
+# Real-data audit output is PHI. `scripts/revenue-leak-audit.ts` refuses to write a real report
+# anywhere inside this repository; this line is the second guard, for a report someone copies in by
+# hand. (The synthetic demonstration lives in docs/pilot/synthetic-audit/ and IS committed.)
+docs/pilot/audit-output/
+*.phi.*
+
+# Screenshot sweeps from scripts/shoot.mjs: PNGs and a measurement report, regenerated on
+# demand and never a source of truth. Committing them would put ~4MB of binaries in every clone
+# to record what one command reproduces in a minute.
+.screens/

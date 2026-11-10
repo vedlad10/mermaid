@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared domain types, snapshot schemas, and versioning conventions for Mermaid.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

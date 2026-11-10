@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/denials-appeals",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Denials & Appeals bounded context: triage against the payer playbook, deterministic appeal drafting, the human approval gate, and outcome recording that feeds the learning loop.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

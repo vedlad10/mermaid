@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Central typed environment config + the swappable-implementation seams (EDI adapter, LLM provider) and per-practice feature flags.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

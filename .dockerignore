@@ -1,0 +1,34 @@
+# Production Dockerignore
+# Strictly prohibit environment files, secrets, version control, and temporary files
+
+.git
+.github
+.gitignore
+.gitattributes
+
+# Environment secrets (HIGHEST PRIORITY - NEVER BAKE SECRETS INTO IMAGES)
+.env*
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+
+# Test suites, fixtures, synthetic runs
+tests/
+**/__tests__/
+scripts/
+docs/
+*.md
+
+# Local scratch / development artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Database dump files / temporary logs
+*.sql.bak
+*.log

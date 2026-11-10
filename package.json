@@ -1,0 +1,58 @@
+{
+  "name": "mermaid",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Mermaid — unified AI Revenue Cycle Platform (modular monolith)",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "platform/*",
+    "modules/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "migrate": "node --env-file-if-exists=.env platform/db/migrate.mjs",
+    "migrate:status": "node --env-file-if-exists=.env platform/db/migrate.mjs --status",
+    "db:verify": "node --env-file-if-exists=.env platform/db/verify.mjs",
+    "db:sync-coordination": "node --env-file-if-exists=.env scripts/sync-coordination-cases.ts",
+    "demo:verify": "node --env-file-if-exists=.env scripts/demo-verify.mjs",
+    "demo:seed": "node --env-file-if-exists=.env scripts/seed-demo-practice.ts",
+    "demo:sync": "node --env-file-if-exists=.env scripts/sync-demo-environment.mjs",
+    "demo:scenarios": "node --env-file-if-exists=.env scripts/mock-scenarios.ts",
+    "demo:journey": "node --env-file-if-exists=.env scripts/demo-journey.ts",
+    "audit:synthetic": "node scripts/revenue-leak-audit.ts --synthetic",
+    "stedi:check": "node --env-file-if-exists=.env scripts/stedi-live-check.mjs",
+    "db:clean-tests": "node --env-file-if-exists=.env platform/db/clean-test-data.mjs",
+    "db:provision-role": "node --env-file-if-exists=.env platform/db/provision-app-role.mjs",
+    "auth:issue-reset": "node --env-file-if-exists=.env platform/db/issue-password-reset.mjs",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:encrypt-phi": "node --env-file-if-exists=.env platform/db/encrypt-phi.mjs",
+    "db:backfill-ledger-patients": "node --env-file-if-exists=.env platform/db/backfill-ledger-patients.mjs",
+    "db:backfill-dependents": "node --env-file-if-exists=.env platform/db/backfill-dependents.mjs",
+    "web": "node --env-file-if-exists=.env apps/web/server.ts",
+    "web:demo": "node --env-file-if-exists=.env scripts/serve-demo.mjs",
+    "worker": "node --env-file-if-exists=.env apps/web/worker.ts",
+    "jobs": "node --env-file-if-exists=.env apps/web/jobs.ts",
+    "boundaries": "node platform/tools/check-boundaries.mjs",
+    "lint": "node platform/tools/check-boundaries.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test \"packages/**/__tests__/*.test.ts\" \"platform/**/__tests__/*.test.ts\" \"modules/**/__tests__/*.test.ts\" \"apps/**/__tests__/*.test.ts\" \"tests/*.test.ts\" \"tests/hitl/*.test.ts\" \"platform/**/__tests__/*.test.mjs\"",
+    "test:db": "node --env-file-if-exists=.env --test --test-concurrency=1 \"tests/db/*.test.ts\"",
+    "test:all": "npm test && npm run test:db",
+    "deploy:staging": "node scripts/deploy-staging.mjs",
+    "deploy:status": "node scripts/deploy-staging.mjs --status",
+    "ship": "node scripts/deploy-staging.mjs --ship"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}

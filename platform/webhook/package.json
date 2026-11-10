@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/webhook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Authentication for the platform's first untrusted inbound path. Verifies a webhook before anything reads its body.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

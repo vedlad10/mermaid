@@ -1,0 +1,4 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["adapter.ts", "index.ts", "mock/**/*.ts", "vendors/**/*.ts", "__tests__/**/*.ts"]
+}

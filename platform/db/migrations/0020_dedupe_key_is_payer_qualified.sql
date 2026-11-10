@@ -1,0 +1,51 @@
+-- 0020 — a trace number only identifies a payment ALONGSIDE the payer that issued it.
+--
+-- ── THE DEFECT THIS CLOSES (M1) ──────────────────────────────────────────────────────────────────
+-- Migration 0018 split identity (`trace_number`) from idempotency (`dedupe_key`) and, for a file
+-- that carries a TRN, set the two to the same value. That is where the mistake is: a trace number is
+-- the payer's own CHECK or EFT number. It is unique inside that payer's numbering and nowhere else.
+-- Payers start sequences at low numbers and reuse them, so Delta Dental cheque `10024` and Cigna
+-- cheque `10024` are two ordinary, unrelated payments — and `UNIQUE (practice_id, dedupe_key)` made
+-- them one.
+--
+-- The consequence is the quietest failure in the money path. `RemittanceService.#ingest` looks the
+-- key up first; finding the Delta remittance, it concludes the Cigna file is a redelivery and
+-- returns the DELTA remittance's view as a success. The second payment is never written. The ERA
+-- worker counts it as ingested and settles the artifact. And `reconcileAll()` reconciles the
+-- `remittances` table against itself, so a payment that was never written contributes nothing to
+-- `drift` and the money monitor reports BALANCED. A payer's cheque sits in the bank against no
+-- ledger entry, no held remittance, and no error anywhere.
+--
+-- ── WHY THE PAYER NAME AND NOT TRN03 ─────────────────────────────────────────────────────────────
+-- TRN03, the originating company identifier, is the qualifier X12 puts in the segment for exactly
+-- this reason, and the parser already reads it. It is not usable HERE because it is not a stored
+-- column: this migration has to recompute the keys of rows that already exist, or a redelivery of an
+-- ERA ingested before today would miss and post the same money twice. A backfill can only use what
+-- is in the table. `payer_name` is a column; the originator would have to be recovered by
+-- re-parsing an encrypted and possibly-absent `raw_835`.
+--
+-- The payer name does the job this key actually has, which is narrower than it looks: be STABLE for
+-- the same file redelivered, and DIFFER between different payments. The name is read out of the
+-- file, so redelivering those bytes yields the same name however the payer may have rebranded.
+--
+-- ── WHY THIS BACKFILL CANNOT COLLIDE ─────────────────────────────────────────────────────────────
+-- The old constraint already guaranteed `trace_number` unique per practice. The new key contains the
+-- whole trace number, so two rows that were distinct before are still distinct after — the mapping
+-- is one-to-one and no pair can be driven together. The UPDATE therefore cannot violate the
+-- constraint it runs under.
+--
+-- Rows with no trace number are left exactly as they are. Their key is the content hash
+-- `dedupeKeyFor` derives (which already folds the payer in, and so never had this defect), or the
+-- empty string for rows predating 0018 — of which the old constraint permitted at most one per
+-- practice.
+--
+-- The folding matches `payerKeyOf` in modules/remittance/src/service.ts: trim, collapse internal
+-- whitespace, uppercase. If those two ever disagree, a redelivery stops being recognised, so they
+-- are written to be read together.
+
+UPDATE remittances
+   SET dedupe_key = upper(regexp_replace(btrim(payer_name), '\s+', ' ', 'g')) || '|' || trace_number
+ WHERE btrim(trace_number) <> ''
+   -- Idempotent: a re-run must not qualify an already-qualified key a second time. Only rows whose
+   -- key is still the bare trace number are rewritten.
+   AND dedupe_key = trace_number;

@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "platform/*/src/**/*.ts",
+    "platform/db/*.ts",
+    "platform/db/__tests__/**/*.ts",
+    "platform/edi/*.ts",
+    "platform/edi/mock/**/*.ts",
+    "platform/edi/vendors/**/*.ts",
+    "platform/edi/__tests__/**/*.ts",
+    "modules/*/src/**/*.ts",
+    "apps/web/*.ts",
+    "apps/web/__tests__/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}

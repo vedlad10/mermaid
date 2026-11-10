@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Clinic web demo — zero-dependency Node HTTP server exposing the /api/v1 contract over the module services, plus a static UI.",
+  "scripts": {
+    "start": "node server.ts"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/observability",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Structured logging, append-only audit writer, and in-memory metrics for Mermaid.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

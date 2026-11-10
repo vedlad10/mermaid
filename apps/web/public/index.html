@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      The application is dark. This tells the browser so, which is what makes UA-painted things —
+      scrollbars, form-control chrome, autofill, and the `buttontext` system colour a <button>
+      inherits — render for a dark ground instead of a light one.
+    -->
+    <meta name="color-scheme" content="dark" />
+    <title>Mermaid — Revenue Cycle</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230C6157'/%3E%3Cpath d='M5 20c2.5-4 5-4 7.5 0S17.5 24 20 20s5-4 7 0' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <!-- Self-hosted. A clinic network that blocks a font CDN must still get the product's typography,
+         and a page that renders in a fallback face is a page whose numbers no longer line up. -->
+    <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 40 24" width="26" height="16">
+            <path d="M2 14c4-8 8-8 12 0s8 8 12 0 8-8 12 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="brand__name">Mermaid</span>
+        <span class="brand__sub">Revenue Cycle</span>
+      </div>
+      <div class="topbar__right">
+        <!--
+          Presentation mode (§8.6) belongs in the context bar so it is reachable from every screen.
+          It lived on Patients first, and that was a trap: turn it on there, move to Claims, and
+          there is no way to turn it off without navigating back. The control is inserted here by
+          the client so its wording and pressed state stay owned by `privacy.js`.
+        -->
+        <span id="presenting-slot"></span>
+        <span id="whoami" class="whoami" hidden></span>
+        <button id="logout-btn" class="btn btn--quiet btn--sm" type="button" hidden>
+          <svg class="btn__icon btn__icon--phone" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+          <span class="btn__label">Sign out</span>
+        </button>
+        <button id="new-btn" class="btn btn--primary" type="button">
+          <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <span class="btn__label">New patient</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Shown instead of the app until a session exists (Postgres deployments only). -->
+    <div id="login-gate" class="login" hidden>
+      <form class="panel login__panel" id="login-form" novalidate>
+        <h1 class="panel__title">Sign in to Mermaid</h1>
+        <p class="login__hint">
+          This deployment is backed by PostgreSQL with row-level tenant isolation. Every request runs
+          under your practice&rsquo;s context, and every claim you release is recorded against your name.
+        </p>
+        <label class="field"><span class="field__label">Email</span>
+          <input class="input" name="email" type="email" autocomplete="username" /></label>
+        <label class="field field--spaced"><span class="field__label">Password</span>
+          <input class="input" name="password" type="password" autocomplete="current-password" /></label>
+        <p id="login-error" class="form__error" role="alert"></p>
+        <button type="submit" class="btn btn--primary btn--lg login__submit">Sign in</button>
+      </form>
+      <!-- Two-step sign-in (migration 0038): the second factor, after a correct password. -->
+      <form class="panel login__panel" id="mfa-form" novalidate hidden>
+        <h1 class="panel__title">Two-step sign-in</h1>
+        <div id="mfa-enroll" hidden>
+          <p class="login__hint">
+            This practice requires two-step sign-in. Add Mermaid to an authenticator app (Google
+            Authenticator, Microsoft Authenticator, 1Password) using this key, then enter the code it shows.
+          </p>
+          <p class="mfa__secret" id="mfa-secret"></p>
+          <p class="login__hint"><a id="mfa-uri" href="#">Open in an authenticator app on this device</a></p>
+        </div>
+        <p class="login__hint" id="mfa-verify-hint">Enter the 6-digit code from your authenticator app. A recovery code also works.</p>
+        <label class="field"><span class="field__label">Code</span>
+          <input class="input" name="code" inputmode="numeric" autocomplete="one-time-code" /></label>
+        <p id="mfa-error" class="form__error" role="alert"></p>
+        <button type="submit" class="btn btn--primary btn--lg login__submit">Continue</button>
+      </form>
+      <div class="panel login__panel" id="mfa-recovery" hidden>
+        <h1 class="panel__title">Save your recovery codes</h1>
+        <p class="login__hint">
+          Each code signs you in once if you lose your phone. Store them somewhere safe — they will not be shown again.
+        </p>
+        <pre class="mfa__codes" id="mfa-codes"></pre>
+        <button type="button" class="btn btn--primary btn--lg login__submit" id="mfa-recovery-done">I have saved them</button>
+      </div>
+    </div>
+
+    <!--
+      Three zones, each with exactly one job: the rail says which part of the revenue cycle you are
+      in, the worklist says which item, the stage shows it. These used to be two, with the section
+      tabs living inside the worklist column — so "where am I in the product" and "what am I working
+      on" competed for the same 300px and the tabs had to shrink to 11.5px to fit eight of them.
+
+      Inside `.layout` rather than wrapping it, because the sign-in gate hides `.layout` wholesale and
+      a navigation rail left standing over a login form is an invitation to click it.
+    -->
+    <main class="layout">
+      <nav class="rail" aria-label="Revenue cycle sections">
+        <button class="tab rail__item" role="tab" type="button" data-tab="today" data-requires="queue.read" aria-label="Today" title="Today" aria-selected="true">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 13h4.5l1.8 2.6h5.4L16.5 13H21" />
+            <path d="M5.4 5h13.2l2.4 8v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4z" />
+          </svg>
+          <span class="rail__label">Today</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="verifications" data-requires="verifications.read" aria-label="Verify" title="Verify" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3.2 19 6v5.8c0 4.4-2.9 7.4-7 8.9-4.1-1.5-7-4.5-7-8.9V6z" />
+            <path d="m9 12 2.2 2.2L15.4 10" />
+          </svg>
+          <span class="rail__label">Verify</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="claims" data-requires="claims.read" aria-label="Claims" title="Claims" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 3.2H7.4a2 2 0 0 0-2 2v13.6a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2V7.8z" />
+            <path d="M13.8 3.2v4.6h4.8" />
+            <path d="M9 13.4h6M9 16.8h3.6" />
+          </svg>
+          <span class="rail__label">Claims</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="money" data-requires="remittances.read" aria-label="Money" title="Money" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="6.2" width="18" height="11.6" rx="2" />
+            <circle cx="12" cy="12" r="2.4" />
+            <path d="M6.6 12h.02M17.4 12h.02" />
+          </svg>
+          <span class="rail__label">Money</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="recovery" data-requires="denials.read" aria-label="Recover" title="Recover" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12a8 8 0 1 0 2.6-5.9L3.4 9" />
+            <path d="M3.2 4.2v5h5" />
+          </svg>
+          <span class="rail__label">Recover</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="patients" data-requires="patients.read" aria-label="Patients" title="Patients" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10" cy="8.4" r="3.2" />
+            <path d="M3.8 19.4v-1.2a3.6 3.6 0 0 1 3.6-3.6h5.2a3.6 3.6 0 0 1 3.6 3.6v1.2" />
+            <path d="M17.4 6.6a3 3 0 0 1 0 5.4M19 19.4v-1.2a3.6 3.6 0 0 0-1.6-3" />
+          </svg>
+          <span class="rail__label">Patients</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="insights" data-requires="analytics.read" aria-label="Insights" title="Insights" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5.4 19.6V11M12 19.6V4.8M18.6 19.6v-5.8" />
+          </svg>
+          <span class="rail__label">Insights</span>
+        </button>
+        <button class="tab rail__item" role="tab" type="button" data-tab="ops" data-requires="audit.read" aria-label="Ops" title="Ops" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12.4h3.8l2.4-6.2 4 12.4 2.4-6.2H21" />
+          </svg>
+          <span class="rail__label">Ops</span>
+        </button>
+        <!--
+          Integration Test / Stedi Test Lab.
+
+          Last in the rail on purpose: it is the only section that is not part of anybody's working
+          day. It reports on the product rather than running it, so putting it above Ops would give
+          engineering diagnostics a higher billing than the money screens.
+        -->
+        <button class="tab rail__item" role="tab" type="button" data-tab="testlab" data-requires="audit.read" aria-label="Test Lab" title="Test Lab" aria-selected="false">
+          <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9.6 3.2v5.4L4.9 17a2 2 0 0 0 1.7 3h10.8a2 2 0 0 0 1.7-3l-4.7-8.4V3.2" />
+            <path d="M8.4 3.2h7.2M7.8 14.4h8.4" />
+          </svg>
+          <span class="rail__label">Test Lab</span>
+        </button>
+      </nav>
+
+      <aside class="queue" aria-label="Worklist">
+        <div class="queue__head">
+          <h2 id="queue-title" class="queue__title">Today</h2>
+          <span id="queue-count" class="queue__count">—</span>
+        </div>
+        <p id="queue-hint" class="queue__hint">Ranked by what needs a person first.</p>
+        <div id="queue-actions" class="queue__actions"></div>
+        <!-- Where the coverage on this board came from. Cleared and rewritten by every queue
+             loader, so it can never outlive the list it describes. -->
+        <div id="queue-sources"></div>
+        <ol id="queue-list" class="queue__list"></ol>
+      </aside>
+
+      <section id="stage" class="stage" aria-live="polite">
+        <!-- Form or detail is rendered here by app.js -->
+      </section>
+    </main>
+
+    <!-- Templates ---------------------------------------------------------------->
+    <template id="tpl-form">
+      <form class="panel form" novalidate>
+        <div class="panel__head">
+          <div>
+            <h1 class="panel__title">Verify a patient&rsquo;s coverage</h1>
+            <p class="panel__lede">
+              Mermaid checks eligibility with the payer, prices the treatment plan against what came
+              back, and routes anything it is not certain about to a person.
+            </p>
+          </div>
+        </div>
+
+        <div class="form__samples" data-requires="audit.read">
+          <span class="microlabel">Try a scenario</span>
+          <div id="sample-chips" class="chips"></div>
+        </div>
+
+        <div class="form__grid">
+          <section class="field-group">
+            <h2 class="field-group__title">Patient</h2>
+            <div class="grid-2">
+              <label class="field"><span class="field__label">First name</span>
+                <input class="input" name="firstName" autocomplete="off" /></label>
+              <label class="field"><span class="field__label">Last name</span>
+                <input class="input" name="lastName" autocomplete="off" /></label>
+            </div>
+            <div class="grid-2">
+              <label class="field"><span class="field__label">Date of birth</span>
+                <input class="input" name="dateOfBirth" placeholder="YYYY-MM-DD" autocomplete="off" /></label>
+              <label class="field"><span class="field__label">Member ID</span>
+                <input class="input input--mono" name="memberId" autocomplete="off" /></label>
+            </div>
+            <!--
+              The patient's address — 837D loop 2010BA. Not required to VERIFY coverage, which is why
+              the hint says so: a front desk must be able to check eligibility from a card and a name
+              without holding up the queue. It is required to FILE, and the claim scrubber blocks the
+              submit gate until it is here, which is the point at which a payer actually needs it.
+            -->
+            <label class="field">
+              <span class="field__label">
+                Street <span class="field__hint">needed to file a claim, not to verify coverage</span>
+              </span>
+              <input class="input" name="addressStreet" autocomplete="address-line1" />
+            </label>
+            <div class="grid-3">
+              <label class="field"><span class="field__label">City</span>
+                <input class="input" name="addressCity" autocomplete="address-level2" /></label>
+              <label class="field"><span class="field__label">State</span>
+                <input class="input input--mono" name="addressState" maxlength="2" placeholder="CA"
+                       autocomplete="address-level1" /></label>
+              <label class="field"><span class="field__label">ZIP</span>
+                <input class="input input--mono" name="addressZip" maxlength="10" placeholder="94107"
+                       autocomplete="postal-code" inputmode="numeric" /></label>
+            </div>
+          </section>
+
+          <section class="field-group">
+            <h2 class="field-group__title">Insurance card</h2>
+            <!--
+              Photograph and text, together, in that order — and the text is REQUIRED either way.
+              The reader can be switched off, unapproved for PHI, or simply unable to read a blurred
+              photo, and the front desk must not discover that at the moment of check-in. Collecting
+              both at once is what makes "the AI is down" a non-event rather than a blocked patient.
+              `capture="environment"` opens the rear camera on a phone and is ignored on a desktop,
+              where the same control is an ordinary file picker.
+            -->
+            <label class="field">
+              <span class="field__label">
+                Photograph <span class="field__hint">front, and back if the plan is on it — optional</span>
+              </span>
+              <input class="input input--file" type="file" name="cardImages" accept="image/jpeg,image/png,image/webp"
+                     capture="environment" multiple />
+            </label>
+            <div id="card-thumbs" class="card-thumbs"></div>
+            <!-- What the reader made of the photograph, or plainly why it did not. Never silent. -->
+            <div id="card-read-status" aria-live="polite"></div>
+            <label class="field">
+              <span class="field__label">Card text <span class="field__hint">as read off the card — always required</span></span>
+              <textarea class="input input--mono textarea" name="cardText" rows="5" placeholder="Delta Dental&#10;Member ID: ABC12345&#10;Group #: GRP100"></textarea>
+            </label>
+          </section>
+        </div>
+
+        <section class="field-group">
+          <div class="field-group__row">
+            <h2 class="field-group__title">Treatment plan</h2>
+            <button type="button" id="add-line" class="btn btn--quiet btn--sm">
+              <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+              Add procedure
+            </button>
+          </div>
+          <div class="plan">
+            <div class="plan__head">
+              <span>Procedure</span><span>Tooth</span><span>Qty</span><span>Fee (opt.)</span><span></span>
+            </div>
+            <div id="plan-rows" class="plan__rows"></div>
+          </div>
+          <p class="plan__note">
+            Tooth number is required by payers for crowns, fillings, root canals and extractions —
+            the claim scrubber blocks filing without it.
+          </p>
+        </section>
+
+        <div class="form__actions">
+          <p id="form-error" class="form__error" role="alert"></p>
+          <button type="submit" class="btn btn--primary btn--lg">Verify coverage</button>
+        </div>
+      </form>
+    </template>
+
+    <template id="tpl-plan-row">
+      <div class="plan__row">
+        <select class="input plan__code" aria-label="Procedure"></select>
+        <input class="input input--mono plan__tooth" type="text" maxlength="3" placeholder="—" aria-label="Tooth number" />
+        <input class="input input--mono plan__qty" type="number" min="1" value="1" aria-label="Quantity" />
+        <input class="input input--mono plan__fee" type="number" min="0" step="0.01" placeholder="—" aria-label="Fee override in dollars" />
+        <button type="button" class="plan__remove btn btn--icon" aria-label="Remove procedure">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+    </template>
+
+    <!--
+      The drill panel. Chrome rather than screen content, because it must outlive a tab change and
+      because the context it was opened FROM has to stay visible and live behind it.
+    -->
+    <aside id="drill" class="dr" hidden></aside>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

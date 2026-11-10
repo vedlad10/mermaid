@@ -1,0 +1,17 @@
+{
+  "name": "@mermaid/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Postgres migration runner, connection pool (RLS tenant context), and repository base for Mermaid.",
+  "exports": {
+    ".": "./index.ts",
+    "./pool": "./pool.ts",
+    "./repository": "./repository.ts",
+    "./aggregate": "./aggregate.ts"
+  },
+  "scripts": {
+    "migrate": "node migrate.mjs",
+    "status": "node migrate.mjs --status"
+  }
+}

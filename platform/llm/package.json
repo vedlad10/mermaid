@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/llm",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Provider-independent LLM adapter with a degraded-mode router. AI proposes; the deterministic core disposes.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

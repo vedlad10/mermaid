@@ -1,0 +1,8 @@
+{
+  "name": "@mermaid/patient-ledger",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Patient ledger bounded context: what each patient owes the practice, how it got there, and how old it is.",
+  "exports": { ".": "./src/index.ts" }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/payer-profile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The shared payer brain: CARC/CDT playbook rules and learned overturn rates, global across practices.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

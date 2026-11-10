@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Unified authentication & authorization: scrypt passwords, DB-backed sessions, CSRF, RBAC, practice-scoped RLS context.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

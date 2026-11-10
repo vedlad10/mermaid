@@ -1,0 +1,18 @@
+# Normalize line endings — commit LF, avoid CRLF churn on Windows checkouts.
+* text=auto eol=lf
+
+*.mjs   text eol=lf
+*.js    text eol=lf
+*.ts    text eol=lf
+*.sql   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+
+# Binaries
+*.png   binary
+*.ico   binary
+*.pdf   binary
+
+# RFC 4180 CSV for spreadsheets: CRLF on purpose, stored byte-for-byte so a regenerate is identical.
+docs/pilot/synthetic-audit/worklist.csv -text

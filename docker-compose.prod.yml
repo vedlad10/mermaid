@@ -1,0 +1,88 @@
+# ==============================================================================
+# Mermaid - Production Multi-Role Deployment (3 Roles, 1 Codebase)
+# Architecture Reference: docs/architecture/12-deployment-architecture.md
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: mermaid-prod-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mermaid}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mermaid}
+      POSTGRES_DB: ${POSTGRES_DB:-mermaid_prod}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mermaid} -d ${POSTGRES_DB:-mermaid_prod}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Role 1: Stateless Web Service & BFF
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-web
+    restart: unless-stopped
+    command: ["web"]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      PROCESS_ROLE: web
+      DATABASE_URL: ${DATABASE_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      PHI_ENCRYPTION_KEY: ${PHI_ENCRYPTION_KEY}
+      SESSION_SECRET: ${SESSION_SECRET}
+      STEDI_API_KEY: ${STEDI_API_KEY}
+      STEDI_WEBHOOK_SECRET: ${STEDI_WEBHOOK_SECRET}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Role 2: Background Worker (Outbox Poller, Event Dispatcher, and Clearinghouse ERA Worker)
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-worker
+    restart: unless-stopped
+    command: ["worker"]
+    environment:
+      NODE_ENV: production
+      PROCESS_ROLE: worker
+      DATABASE_URL: ${DATABASE_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      PHI_ENCRYPTION_KEY: ${PHI_ENCRYPTION_KEY}
+      STEDI_API_KEY: ${STEDI_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Role 3: Scheduled Jobs Runner (Daily Reconciliation, Monitors, Queue Sweeps)
+  jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-jobs
+    restart: unless-stopped
+    command: ["jobs"]
+    environment:
+      NODE_ENV: production
+      PROCESS_ROLE: jobs
+      DATABASE_URL: ${DATABASE_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL:-postgres://mermaid:mermaid@postgres:5432/mermaid_prod}
+      PHI_ENCRYPTION_KEY: ${PHI_ENCRYPTION_KEY}
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

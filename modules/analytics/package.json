@@ -1,0 +1,8 @@
+{
+  "name": "@mermaid/analytics",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Analytics bounded context: event-sourced facts and the practice report — funnel, money, payer scorecard, denial reasons.",
+  "exports": { ".": "./src/index.ts" }
+}

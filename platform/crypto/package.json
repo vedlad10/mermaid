@@ -1,0 +1,8 @@
+{
+  "name": "@mermaid/crypto",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Application-level envelope encryption for PHI at rest — AES-256-GCM, versioned, key-rotatable.",
+  "exports": { ".": "./src/index.ts" }
+}

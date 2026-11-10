@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/edi",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "EDI clearinghouse adapter (swappable). Mock implementation ports the donor X12 codecs; real vendors slot in behind the same interface.",
+  "exports": {
+    ".": "./index.ts"
+  }
+}

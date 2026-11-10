@@ -1,0 +1,28 @@
+# Render Blueprint — Mermaid clinic demo.
+#
+# Runs the DB-free demo: in-memory store with synthetic data (resets on restart), mock
+# clearinghouse, AI off. It reaches no payer and holds no PHI.
+#
+# For the real deployment, add a Postgres database and set DATABASE_URL, DATABASE_ADMIN_URL,
+# PHI_ENCRYPTION_KEY, TRUST_PROXY, the BILLING_PROVIDER_* identity and NODE_ENV=production
+# (see .env.example and docs/architecture/12-deployment-architecture.md). Production refuses to
+# boot until those are set.
+services:
+  - type: web
+    name: mermaid
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: development
+      - key: DEPLOYMENT_NAME
+        value: demo
+      - key: EDI_ADAPTER
+        value: mock
+      - key: LLM_PROVIDER
+        value: "off"

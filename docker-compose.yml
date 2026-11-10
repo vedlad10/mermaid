@@ -1,0 +1,76 @@
+# ==============================================================================
+# Mermaid - Local Topology (Web, Dedicated Background Worker, Jobs & Database)
+# Architecture Reference: docs/architecture/12-deployment-architecture.md
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: mermaid-dev-db
+    environment:
+      POSTGRES_USER: mermaid
+      POSTGRES_PASSWORD: mermaid
+      POSTGRES_DB: mermaid_dev
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mermaid -d mermaid_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Role 1: Web Service & UI / BFF
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-dev-web
+    command: ["web"]
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      PROCESS_ROLE: web
+      DATABASE_ADMIN_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      DATABASE_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      PGSSLMODE: disable
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Role 2: Background Worker (Outbox Drains, Event Dispatching & Clearinghouse ERA Polling)
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-dev-worker
+    command: ["worker"]
+    environment:
+      NODE_ENV: development
+      PROCESS_ROLE: worker
+      DATABASE_ADMIN_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      DATABASE_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      PGSSLMODE: disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Role 3: Scheduled Jobs Runner (Daily Reconciliation, Timely-Filing Sweeps & Alerts)
+  jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mermaid-dev-jobs
+    command: ["jobs"]
+    environment:
+      NODE_ENV: development
+      PROCESS_ROLE: jobs
+      DATABASE_ADMIN_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      DATABASE_URL: postgres://mermaid:mermaid@postgres:5432/mermaid_dev
+      PGSSLMODE: disable
+    depends_on:
+      postgres:
+        condition: service_healthy

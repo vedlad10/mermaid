@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/claims",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Claims bounded context: claim creation inheriting the verification coverage snapshot, deterministic scrubbing, the human submit gate, and timely-filing risk.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/events",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Domain-event outbox: the typed event catalog and the publish/subscribe seam between bounded contexts.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

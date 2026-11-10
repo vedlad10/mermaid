@@ -1,0 +1,10 @@
+{
+  "name": "@mermaid/remittance",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Remittance bounded context: 835 ingestion, money-safety gating, payment posting, and estimate-vs-actual variance detection.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
