@@ -17,7 +17,9 @@
 # Test suites, fixtures, synthetic runs
 tests/
 **/__tests__/
-scripts/
+# Dev scripts stay out, except the entrypoint the image starts with (Dockerfile: COPY scripts).
+scripts/*
+!scripts/docker-entrypoint.sh
 docs/
 *.md
 
