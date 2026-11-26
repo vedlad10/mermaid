@@ -1,14 +1,14 @@
-// Mermaid landing page: contact links and the one "arrival" motion (figures count up, rows land).
+// Recover landing page: contact links and the one "arrival" motion (figures count up, rows land).
 (function () {
   "use strict";
 
   // Contact details live in one place so they're easy to change later (e.g. a domain email).
   var CONTACT = {
     email: "ladved829@gmail.com",
-    emailSubject: "Mermaid demo",
-    emailBody: "Hi Ved,\n\nI'd like a 20-minute Mermaid demo.\n\nPractice / company:\nBest days and times (with time zone):\n",
+    emailSubject: "Recover demo",
+    emailBody: "Hi Ved,\n\nI'd like a 20-minute Recover demo.\n\nPractice / company:\nBest days and times (with time zone):\n",
     whatsapp: "918355852904",
-    whatsappText: "Hi, I'd like to see a Mermaid demo."
+    whatsappText: "Hi, I'd like to see a Recover demo."
   };
 
   var mailto = "mailto:" + CONTACT.email +

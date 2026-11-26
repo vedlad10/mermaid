@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mermaid · Find the insurance money your practice already earned</title>
-  <meta name="description" content="Mermaid reads every insurer payment line by line, shows what each dental claim should have paid, why it didn't, and what's worth chasing first.">
-  <meta property="og:title" content="Mermaid · Revenue-cycle intelligence for dental practices">
+  <title>Recover · Insurance revenue recovery for dental practices</title>
+  <meta name="description" content="Recover reads every insurer payment line by line and shows what each dental claim should have paid, why it didn't, and what's worth chasing first.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Recover · Insurance revenue recovery for dental practices">
   <meta property="og:description" content="What each claim should have paid, why it didn't, and what's worth chasing first.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306798a'/%3E%3Cpath d='M5 18c3-6 6-6 9 0s6 6 9 0 4-4 4-4' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#06798a">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306798a'/%3E%3Cpath d='M7 11.5l6.5 8 4.5-4.5 7-6.5M19.5 8.5H25V14' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;450;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,17 +19,18 @@
 
 <header class="nav" id="top">
   <div class="wrap nav__row">
-    <a class="brand" href="#top" aria-label="Mermaid home">
+    <a class="brand" href="#top" aria-label="Recover home">
       <span class="brand__mark" aria-hidden="true">
-        <svg viewBox="0 0 40 24" width="22" height="14"><path d="M2 14c4-8 8-8 12 0s8 8 12 0 8-8 12 0" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
-      <span class="brand__name">Mermaid</span>
+      <span class="brand__name">Recover</span>
     </a>
     <nav class="nav__links" aria-label="Sections">
       <a href="#how">How it works</a>
       <a href="#product">Product</a>
       <a href="#who">Who it's for</a>
       <a href="#trust">Security</a>
+      <a href="#faq">FAQ</a>
     </nav>
     <div class="nav__cta">
       <a class="btn btn--primary" data-contact="email" href="#start">Book a demo</a>
@@ -41,9 +44,9 @@
   <section class="hero">
     <div class="wrap hero__grid">
       <div class="hero__copy">
-        <p class="kicker">Revenue-cycle intelligence for US dental practices</p>
-        <h1>Find the insurance money your practice already earned.</h1>
-        <p class="lead">Mermaid reads every insurer payment line by line. It shows what each claim should have paid, why it didn't, and what's worth chasing first.</p>
+        <p class="kicker">Insurance revenue recovery for US dental practices</p>
+        <h1>Recover the insurance revenue your practice already earned.</h1>
+        <p class="lead">Recover reads every insurer payment line by line. It shows what each claim should have paid, why it didn't, and what's worth chasing first.</p>
         <div class="hero__actions">
           <a class="btn btn--primary btn--lg" data-contact="email" href="#start">Book a 20-minute demo</a>
           <a class="btn btn--ghost btn--lg" href="#how">See how it works <span aria-hidden="true">↓</span></a>
@@ -87,13 +90,24 @@
     </div>
   </section>
 
+  <!-- FACTS -->
+  <section class="facts" aria-label="What Recover works from">
+    <div class="wrap facts__grid">
+      <div class="fact"><p class="fact__head">835 / ERA</p><p>Reads the HIPAA-standard payment file every insurer sends.</p></div>
+      <div class="fact"><p class="fact__head">Every line</p><p>Each procedure on each claim, not just claim totals.</p></div>
+      <div class="fact"><p class="fact__head">Real-time checks</p><p>Insurance eligibility through the Stedi clearinghouse.</p></div>
+      <div class="fact"><p class="fact__head">BAA first</p><p>Signed before any patient data is shared.</p></div>
+    </div>
+  </section>
+
   <!-- PROBLEM -->
   <section class="band band--void" id="problem">
     <div class="wrap split">
       <div>
+        <p class="section-label">The problem</p>
         <h2>A claim sets an expectation. The payment says what actually happened.</h2>
         <p class="body">The difference is where the money goes, and in most practices nobody owns it. The front desk checked the benefits, billing sent the claim, the insurer paid less, and the gap sits unread in a remittance file.</p>
-        <ul class="chips" aria-label="Where it leaks">
+        <ul class="chips" aria-label="Where revenue leaks">
           <li>Missed frequency limits</li><li>Below-contract payments</li><li>Denials for missing documents</li>
           <li>Downcoded procedures</li><li>Coordination of benefits</li><li>Unpaid patient balances</li>
         </ul>
@@ -122,6 +136,7 @@
   <!-- WHY TOOLS MISS IT -->
   <section class="band" id="why">
     <div class="wrap">
+      <p class="section-label center">Why it goes unnoticed</p>
       <h2 class="center">Every tool handles one step. The money leaks between them.</h2>
       <div class="grid4">
         <div class="cell"><p class="label">Practice software</p><p>What did we treat and bill?</p></div>
@@ -130,8 +145,8 @@
         <div class="cell"><p class="label">Billing team</p><p>Who works the queue today?</p></div>
       </div>
       <div class="answer">
-        <span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 40 24" width="18" height="11"><path d="M2 14c4-8 8-8 12 0s8 8 12 0 8-8 12 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
-        <p>Mermaid asks the question across all of them: <strong>what should have been paid, and why wasn't it?</strong></p>
+        <span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <p>Recover asks the question across all of them: <strong>what should have been paid, and why wasn't it?</strong></p>
       </div>
     </div>
   </section>
@@ -139,8 +154,9 @@
   <!-- HOW IT WORKS -->
   <section class="band band--void" id="how">
     <div class="wrap">
-      <h2>How it works</h2>
-      <p class="body measure">Mermaid takes the insurance check, the claim and the insurer's payment file (the 835/ERA), and keeps them in one record. Every figure traces back to the payment that produced it.</p>
+      <p class="section-label">How it works</p>
+      <h2>From payment file to recovered dollars.</h2>
+      <p class="body measure">Recover takes the insurance check, the claim and the insurer's payment file (the 835/ERA), and keeps them in one record. Every figure traces back to the payment that produced it.</p>
       <ol class="steps">
         <li><span class="step__n">01</span><h3>Expected</h3><p>What the plan and your contract say each line should pay.</p></li>
         <li><span class="step__n">02</span><h3>Actual</h3><p>What the insurer's payment file says it paid.</p></li>
@@ -154,6 +170,7 @@
   <!-- PRODUCT -->
   <section class="band" id="product">
     <div class="wrap">
+      <p class="section-label">The product</p>
       <h2>Six modules, one record.</h2>
       <div class="modules">
         <article class="module"><p class="module__name">Verify <span class="status status--live">Live today</span></p><p>Real-time insurance checks through the Stedi clearinghouse, with the patient's estimate saved at the moment of the check.</p></article>
@@ -170,7 +187,8 @@
   <!-- WHO -->
   <section class="band band--void" id="who">
     <div class="wrap">
-      <h2>Who it's for</h2>
+      <p class="section-label">Who it's for</p>
+      <h2>Built for the people who chase the money.</h2>
       <div class="audiences">
         <article class="audience">
           <p class="label">Practice owners &amp; office managers</p>
@@ -195,15 +213,17 @@
   <section class="band" id="trust">
     <div class="wrap split split--even">
       <div>
+        <p class="section-label">Our principles</p>
         <h2>How we keep ourselves honest</h2>
         <ul class="ticks">
           <li><b>Every figure has a source.</b> Each number traces back to the insurance check or payment that produced it.</li>
-          <li><b>A person approves anything that leaves the practice.</b> Mermaid drafts; your team decides and sends.</li>
+          <li><b>A person approves anything that leaves the practice.</b> Recover drafts; your team decides and sends.</li>
           <li><b>Examples are labelled as examples.</b> The numbers on this page are illustrative. On a call, we'll look at yours.</li>
-          <li><b>No clinical judgement.</b> Mermaid works on the money side only: coverage, claims, payments and balances.</li>
+          <li><b>No clinical judgement.</b> Recover works on the money side only: coverage, claims, payments and balances.</li>
         </ul>
       </div>
       <div>
+        <p class="section-label">Security</p>
         <h2>Built for patient data</h2>
         <ul class="ticks">
           <li><b>BAA first.</b> We sign a Business Associate Agreement before any patient data is shared.</li>
@@ -211,6 +231,43 @@
           <li><b>Walled-off data.</b> Each practice's records are isolated at the database level.</li>
           <li><b>A full trail.</b> Every change is recorded as an event, so nothing is edited silently.</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="band band--void" id="faq">
+    <div class="wrap faq">
+      <div>
+        <p class="section-label">FAQ</p>
+        <h2>Questions practices ask us</h2>
+        <p class="body">Something else on your mind? <a data-contact="email" href="#start">Email us</a> and a founder will reply.</p>
+      </div>
+      <div class="faq__list">
+        <details>
+          <summary>Does Recover replace my practice management software?</summary>
+          <p>No. Recover works alongside it. It reads the insurer's payment files and a claims export from your practice software, and shows where the two disagree.</p>
+        </details>
+        <details>
+          <summary>Which practice software do you work with?</summary>
+          <p>Recover reads the standard insurer payment file (the 835/ERA) that every clearinghouse provides. For the claims side we have a step-by-step export guide for Open Dental, and we'll walk you through exports from other systems on the call.</p>
+        </details>
+        <details>
+          <summary>Will Recover contact insurers or patients for us?</summary>
+          <p>No. Recover drafts appeals and ranks what to chase. Your team reviews, approves and sends. Nothing leaves your practice without a person signing off.</p>
+        </details>
+        <details>
+          <summary>How is patient data protected?</summary>
+          <p>We sign a Business Associate Agreement before any patient data is shared. Patient fields are encrypted in the database, each practice's records are isolated, and every change is recorded.</p>
+        </details>
+        <details>
+          <summary>What does it cost?</summary>
+          <p>Pricing is per practice location. Our first practices get founding pricing and hands-on setup, and we'll go through it on the call.</p>
+        </details>
+        <details>
+          <summary>How do we get started?</summary>
+          <p>Book a 20-minute call. We'll walk through a sample claim line by line, then decide together whether a pilot makes sense for your practice.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -237,19 +294,41 @@
 </main>
 
 <footer class="footer">
-  <div class="wrap footer__row">
-    <div>
-      <a class="brand" href="#top"><span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 40 24" width="18" height="11"><path d="M2 14c4-8 8-8 12 0s8 8 12 0 8-8 12 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span class="brand__name">Mermaid</span></a>
-      <p class="footer__tag">Revenue-cycle intelligence for dental practices.<br>Navi Mumbai, India · Building for US dental practices.</p>
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <a class="brand" href="#top"><span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand__name">Recover</span></a>
+      <p class="footer__tag">Insurance revenue recovery for dental practices.</p>
     </div>
-    <div class="footer__links">
-      <a data-contact="email" href="mailto:">Email</a>
-      <a data-contact="whatsapp" href="#">WhatsApp</a>
-      <a href="https://www.linkedin.com/in/ved-lad-02583a2b7" target="_blank" rel="noopener">LinkedIn</a>
+    <div>
+      <p class="footer__head">Product</p>
+      <ul class="footer__list">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#product">Modules</a></li>
+        <li><a href="#who">Who it's for</a></li>
+        <li><a href="#trust">Security</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__head">Company</p>
+      <ul class="footer__list">
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://www.linkedin.com/in/ved-lad-02583a2b7" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><span>Navi Mumbai, India</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__head">Contact</p>
+      <ul class="footer__list">
+        <li><a data-contact="email" href="mailto:">Book a demo</a></li>
+        <li><a data-contact="whatsapp" href="#">WhatsApp</a></li>
+      </ul>
     </div>
   </div>
-  <div class="wrap footer__fine">
-    <p>© 2026 Mermaid. Figures shown on this page are illustrative examples, not customer results.</p>
+  <div class="wrap">
+    <div class="footer__fine">
+      <p>© 2026 Recover. All rights reserved.</p>
+      <p>Figures shown on this page are illustrative examples, not customer results.</p>
+    </div>
   </div>
 </footer>
 
