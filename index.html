@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recover · Insurance revenue recovery for dental practices</title>
+  <meta name="description" content="Recover reads every insurer payment line by line and shows what each dental claim should have paid, why it didn't, and what's worth chasing first.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Recover · Insurance revenue recovery for dental practices">
+  <meta property="og:description" content="What each claim should have paid, why it didn't, and what's worth chasing first.">
+  <meta name="theme-color" content="#06798a">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306798a'/%3E%3Cpath d='M7 11.5l6.5 8 4.5-4.5 7-6.5M19.5 8.5H25V14' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;450;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav" id="top">
+  <div class="wrap nav__row">
+    <a class="brand" href="#top" aria-label="Recover home">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand__name">Recover</span>
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#product">Product</a>
+      <a href="#who">Who it's for</a>
+      <a href="#trust">Security</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav__cta">
+      <a class="btn btn--primary" data-contact="email" href="#start">Book a demo</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="kicker">Insurance revenue recovery for US dental practices</p>
+        <h1>Recover the insurance revenue your practice already earned.</h1>
+        <p class="lead">Recover reads every insurer payment line by line. It shows what each claim should have paid, why it didn't, and what's worth chasing first.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" data-contact="email" href="#start">Book a 20-minute demo</a>
+          <a class="btn btn--ghost btn--lg" href="#how">See how it works <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero__note">For practice owners, office managers, dental groups and the billing teams that serve them.</p>
+      </div>
+
+      <figure class="instrument" aria-label="Example: one claim read line by line">
+        <div class="instrument__bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="instrument__title">One claim · line by line</span>
+          <span class="tag">Illustrative data</span>
+        </div>
+        <div class="instrument__signal">
+          <div>
+            <p class="label">Short on this claim</p>
+            <p class="figure figure--xl figure--loss">$<span data-count="1890">1,890</span></p>
+          </div>
+          <div class="instrument__mini">
+            <div><p class="label">Expected</p><p class="figure figure--md">$<span data-count="3085">3,085</span></p></div>
+            <div><p class="label">Paid</p><p class="figure figure--md">$<span data-count="1195">1,195</span></p></div>
+          </div>
+        </div>
+        <table class="lines">
+          <thead><tr><th>Procedure</th><th class="num">Expected</th><th class="num">Paid</th><th class="num">Gap</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr class="row--loss"><td><span class="code">D6010</span> Implant</td><td class="num">1,420</td><td class="num">0</td><td class="num gap">1,420</td><td><span class="why why--loss">Denied: missing X-ray</span></td></tr>
+            <tr class="row--loss"><td><span class="code">D2740</span> Crown</td><td class="num">1,200</td><td class="num">780</td><td class="num gap">420</td><td><span class="why why--loss">Below contracted fee</span></td></tr>
+            <tr class="row--warn"><td><span class="code">D4341</span> Scaling</td><td class="num">320</td><td class="num">270</td><td class="num gap">50</td><td><span class="why why--warn">Frequency limit</span></td></tr>
+            <tr><td><span class="code">D0330</span> Pano</td><td class="num">145</td><td class="num">145</td><td class="num">—</td><td><span class="why why--ok">Paid as expected</span></td></tr>
+          </tbody>
+        </table>
+        <div class="instrument__queue">
+          <p class="label">Next actions, ranked by dollars</p>
+          <ol>
+            <li><span>Appeal the implant with the X-ray attached</span><span class="figure figure--sm">$1,420</span></li>
+            <li><span>Dispute the crown against your fee schedule</span><span class="figure figure--sm">$420</span></li>
+          </ol>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- FACTS -->
+  <section class="facts" aria-label="What Recover works from">
+    <div class="wrap facts__grid">
+      <div class="fact"><p class="fact__head">835 / ERA</p><p>Reads the HIPAA-standard payment file every insurer sends.</p></div>
+      <div class="fact"><p class="fact__head">Every line</p><p>Each procedure on each claim, not just claim totals.</p></div>
+      <div class="fact"><p class="fact__head">Real-time checks</p><p>Insurance eligibility through the Stedi clearinghouse.</p></div>
+      <div class="fact"><p class="fact__head">BAA first</p><p>Signed before any patient data is shared.</p></div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="band band--void" id="problem">
+    <div class="wrap split">
+      <div>
+        <p class="section-label">The problem</p>
+        <h2>A claim sets an expectation. The payment says what actually happened.</h2>
+        <p class="body">The difference is where the money goes, and in most practices nobody owns it. The front desk checked the benefits, billing sent the claim, the insurer paid less, and the gap sits unread in a remittance file.</p>
+        <ul class="chips" aria-label="Where revenue leaks">
+          <li>Missed frequency limits</li><li>Below-contract payments</li><li>Denials for missing documents</li>
+          <li>Downcoded procedures</li><li>Coordination of benefits</li><li>Unpaid patient balances</li>
+        </ul>
+      </div>
+      <div class="money" aria-label="Illustrative example: where $10,000 went">
+        <p class="label">Where did the $10,000 go? <span class="tag">Illustrative</span></p>
+        <div class="money__figures">
+          <div><p class="label">Expected</p><p class="figure figure--lg">$<span data-count="10000">10,000</span></p></div>
+          <div><p class="label">Paid</p><p class="figure figure--lg">$<span data-count="6850">6,850</span></p></div>
+          <div><p class="label">Gap</p><p class="figure figure--lg figure--loss">$<span data-count="3150">3,150</span></p></div>
+        </div>
+        <div class="stack" role="img" aria-label="Of $3,150: $1,420 denied for a missing X-ray, $950 patient balance unpaid, $780 below the contracted fee">
+          <span style="--w:45.08%" class="stack__seg stack__seg--1"></span>
+          <span style="--w:30.16%" class="stack__seg stack__seg--2"></span>
+          <span style="--w:24.76%" class="stack__seg stack__seg--3"></span>
+        </div>
+        <ul class="legend">
+          <li><span class="key key--1"></span>Denied: missing X-ray <b>$1,420</b><em>Appeal with attachment</em></li>
+          <li><span class="key key--2"></span>Patient balance unpaid <b>$950</b><em>Collect against the estimate</em></li>
+          <li><span class="key key--3"></span>Below contracted fee <b>$780</b><em>Dispute against fee schedule</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY TOOLS MISS IT -->
+  <section class="band" id="why">
+    <div class="wrap">
+      <p class="section-label center">Why it goes unnoticed</p>
+      <h2 class="center">Every tool handles one step. The money leaks between them.</h2>
+      <div class="grid4">
+        <div class="cell"><p class="label">Practice software</p><p>What did we treat and bill?</p></div>
+        <div class="cell"><p class="label">Clearinghouse</p><p>Was the claim sent, and what came back?</p></div>
+        <div class="cell"><p class="label">Posting tools</p><p>Is the payment posted and reconciled?</p></div>
+        <div class="cell"><p class="label">Billing team</p><p>Who works the queue today?</p></div>
+      </div>
+      <div class="answer">
+        <span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <p>Recover asks the question across all of them: <strong>what should have been paid, and why wasn't it?</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="band band--void" id="how">
+    <div class="wrap">
+      <p class="section-label">How it works</p>
+      <h2>From payment file to recovered dollars.</h2>
+      <p class="body measure">Recover takes the insurance check, the claim and the insurer's payment file (the 835/ERA), and keeps them in one record. Every figure traces back to the payment that produced it.</p>
+      <ol class="steps">
+        <li><span class="step__n">01</span><h3>Expected</h3><p>What the plan and your contract say each line should pay.</p></li>
+        <li><span class="step__n">02</span><h3>Actual</h3><p>What the insurer's payment file says it paid.</p></li>
+        <li><span class="step__n">03</span><h3>The gap</h3><p>The difference, procedure by procedure.</p></li>
+        <li><span class="step__n">04</span><h3>The reason</h3><p>Denial, limit, rate or missing document, named.</p></li>
+        <li><span class="step__n">05</span><h3>The recovery</h3><p>A queue ranked by dollars, with an action on every line.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section class="band" id="product">
+    <div class="wrap">
+      <p class="section-label">The product</p>
+      <h2>Six modules, one record.</h2>
+      <div class="modules">
+        <article class="module"><p class="module__name">Verify <span class="status status--live">Live today</span></p><p>Real-time insurance checks through the Stedi clearinghouse, with the patient's estimate saved at the moment of the check.</p></article>
+        <article class="module"><p class="module__name">Claims</p><p>The verified estimate becomes the claim, checked for risk before a named person on your team releases it.</p></article>
+        <article class="module"><p class="module__name">Payments &amp; gaps</p><p>Every insurer payment matched to what was expected, with each shortfall split into contractual, patient and recoverable.</p></article>
+        <article class="module"><p class="module__name">Denials &amp; appeals</p><p>Denials ranked by value, with an appeal drafted and an evidence checklist for your team to approve.</p></article>
+        <article class="module"><p class="module__name">Patient balances</p><p>What each patient owes against what they were quoted, and how old it is.</p></article>
+        <article class="module"><p class="module__name">Insights</p><p>Revenue health by insurer and procedure code, so you see which payers underpay and where.</p></article>
+      </div>
+      <p class="honest-note">Insurance checks are live today. Claims, payments and denials are built and are being connected with our first pilot practices.</p>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="band band--void" id="who">
+    <div class="wrap">
+      <p class="section-label">Who it's for</p>
+      <h2>Built for the people who chase the money.</h2>
+      <div class="audiences">
+        <article class="audience">
+          <p class="label">Practice owners &amp; office managers</p>
+          <h3>Know what you're owed before you chase it.</h3>
+          <p>One list each morning of what needs a person: the claims worth appealing, the payments that came in short, the balances to collect.</p>
+        </article>
+        <article class="audience">
+          <p class="label">Dental groups</p>
+          <h3>See which insurers underpay, and on what.</h3>
+          <p>Gaps by payer and procedure code, so contract talks start from your own numbers.</p>
+        </article>
+        <article class="audience">
+          <p class="label">Billing companies</p>
+          <h3>Give every biller a ranked queue.</h3>
+          <p>The reason and the evidence on every line, so your team spends its hours on the dollars that come back.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="band" id="trust">
+    <div class="wrap split split--even">
+      <div>
+        <p class="section-label">Our principles</p>
+        <h2>How we keep ourselves honest</h2>
+        <ul class="ticks">
+          <li><b>Every figure has a source.</b> Each number traces back to the insurance check or payment that produced it.</li>
+          <li><b>A person approves anything that leaves the practice.</b> Recover drafts; your team decides and sends.</li>
+          <li><b>Examples are labelled as examples.</b> The numbers on this page are illustrative. On a call, we'll look at yours.</li>
+          <li><b>No clinical judgement.</b> Recover works on the money side only: coverage, claims, payments and balances.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-label">Security</p>
+        <h2>Built for patient data</h2>
+        <ul class="ticks">
+          <li><b>BAA first.</b> We sign a Business Associate Agreement before any patient data is shared.</li>
+          <li><b>Encrypted patient details.</b> Patient fields are encrypted in the database, with the key held outside the code.</li>
+          <li><b>Walled-off data.</b> Each practice's records are isolated at the database level.</li>
+          <li><b>A full trail.</b> Every change is recorded as an event, so nothing is edited silently.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="band band--void" id="faq">
+    <div class="wrap faq">
+      <div>
+        <p class="section-label">FAQ</p>
+        <h2>Questions practices ask us</h2>
+        <p class="body">Something else on your mind? <a data-contact="email" href="#start">Email us</a> and a founder will reply.</p>
+      </div>
+      <div class="faq__list">
+        <details>
+          <summary>Does Recover replace my practice management software?</summary>
+          <p>No. Recover works alongside it. It reads the insurer's payment files and a claims export from your practice software, and shows where the two disagree.</p>
+        </details>
+        <details>
+          <summary>Which practice software do you work with?</summary>
+          <p>Recover reads the standard insurer payment file (the 835/ERA) that every clearinghouse provides. For the claims side we have a step-by-step export guide for Open Dental, and we'll walk you through exports from other systems on the call.</p>
+        </details>
+        <details>
+          <summary>Will Recover contact insurers or patients for us?</summary>
+          <p>No. Recover drafts appeals and ranks what to chase. Your team reviews, approves and sends. Nothing leaves your practice without a person signing off.</p>
+        </details>
+        <details>
+          <summary>How is patient data protected?</summary>
+          <p>We sign a Business Associate Agreement before any patient data is shared. Patient fields are encrypted in the database, each practice's records are isolated, and every change is recorded.</p>
+        </details>
+        <details>
+          <summary>What does it cost?</summary>
+          <p>Pricing is per practice location. Our first practices get founding pricing and hands-on setup, and we'll go through it on the call.</p>
+        </details>
+        <details>
+          <summary>How do we get started?</summary>
+          <p>Book a 20-minute call. We'll walk through a sample claim line by line, then decide together whether a pilot makes sense for your practice.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- START -->
+  <section class="band band--ink" id="start">
+    <div class="wrap start">
+      <div>
+        <h2>We're onboarding our first practices.</h2>
+        <p class="body">Start with a 20-minute video call. We'll walk through a sample claim, then look at where your insurance payments fall short. Founding practices get hands-on setup and founding pricing.</p>
+        <ol class="start__steps">
+          <li><span>1</span>Book a 20-minute call</li>
+          <li><span>2</span>See a sample claim, line by line</li>
+          <li><span>3</span>Decide if a pilot is worth it</li>
+        </ol>
+      </div>
+      <div class="start__actions">
+        <a class="btn btn--light btn--lg" data-contact="email" href="mailto:">Email us to book a demo</a>
+        <a class="btn btn--outline-light btn--lg" data-contact="whatsapp" href="#">Message us on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <a class="brand" href="#top"><span class="brand__mark brand__mark--sm" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3.5 7.5l6.5 8 4.5-4.5 6-5.5M15.5 5.5h5v5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand__name">Recover</span></a>
+      <p class="footer__tag">Insurance revenue recovery for dental practices.</p>
+    </div>
+    <div>
+      <p class="footer__head">Product</p>
+      <ul class="footer__list">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#product">Modules</a></li>
+        <li><a href="#who">Who it's for</a></li>
+        <li><a href="#trust">Security</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__head">Company</p>
+      <ul class="footer__list">
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://www.linkedin.com/in/ved-lad-02583a2b7" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><span>Navi Mumbai, India</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__head">Contact</p>
+      <ul class="footer__list">
+        <li><a data-contact="email" href="mailto:">Book a demo</a></li>
+        <li><a data-contact="whatsapp" href="#">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="footer__fine">
+      <p>© 2026 Recover. All rights reserved.</p>
+      <p>Figures shown on this page are illustrative examples, not customer results.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
